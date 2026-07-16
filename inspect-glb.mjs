@@ -1,0 +1,10 @@
+import fs from 'fs/promises';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+const data = await fs.readFile('./public/models/hafid-avatar.glb');
+const loader = new GLTFLoader();
+const gltf = await loader.parseAsync(data.buffer, '');
+const box = new THREE.Box3().setFromObject(gltf.scene);
+const size = new THREE.Vector3(); const center = new THREE.Vector3(); box.getSize(size); box.getCenter(center);
+console.log('bbox', box.min.toArray(), box.max.toArray(), 'size', size.toArray(), 'center', center.toArray());
+gltf.scene.traverse((child)=>{ if(child.isMesh) console.log('mesh', child.name); });
