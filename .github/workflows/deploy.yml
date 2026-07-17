@@ -2,8 +2,7 @@ name: Deploy Portfolio to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: ['main']
   workflow_dispatch:
 
 permissions:
@@ -17,45 +16,43 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '20.19.4'
-          cache: npm
-          cache-dependency-path: package-lock.json
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
 
-      - name: Display versions and npm configuration
+      - name: Verify project files
         run: |
+          test -f package.json
+          test -f package-lock.json
+          test -f vite.config.ts
           node --version
           npm --version
-          echo "npm omit:"
-          npm config get omit
-          echo "npm production:"
-          npm config get production
 
-      - name: Install all build dependencies
+      - name: Install dependencies from public npm registry
         env:
           NODE_ENV: development
-          NPM_CONFIG_PRODUCTION: "false"
+          NPM_CONFIG_PRODUCTION: 'false'
+          NPM_CONFIG_REGISTRY: 'https://registry.npmjs.org/'
         run: npm ci --include=dev --no-audit --no-fund
         timeout-minutes: 10
 
-      - name: Verify build dependencies
+      - name: Verify Vite installation
         run: |
-          npm ls vite --depth=0
-          npm ls @vitejs/plugin-react --depth=0
-          npm ls typescript --depth=0
+          node -e "const v=require('./node_modules/vite/package.json').version; if(v!=='7.3.6') throw new Error('Unexpected Vite version: '+v); console.log('Vite',v,'OK')"
+          node -e "const v=require('./node_modules/@vitejs/plugin-react/package.json').version; if(v!=='5.2.0') throw new Error('Unexpected plugin-react version: '+v); console.log('@vitejs/plugin-react',v,'OK')"
 
       - name: Build portfolio
         run: npm run build
@@ -66,7 +63,7 @@ jobs:
       - name: Upload production artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: ./dist
+          path: './dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
