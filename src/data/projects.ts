@@ -91,7 +91,7 @@ export const projects: Project[] = [
       id: 'Konsep website premium modern untuk pusat padel dengan tipografi yang tegas, landing page kuat, fokus membership, dan CTA yang mendorong konversi.',
     },
     tags: ['Landing Page', 'Premium UI', 'Sports Brand', 'Responsive Web'],
-    cover: '/projects/padel-elite/cover.png',
+    cover: '/projects/velvet-noir/cover.jpg',
     liveUrl: 'https://padel-elite.lovable.app',
   },
   {
@@ -108,7 +108,7 @@ export const projects: Project[] = [
       id: 'Pengalaman website mewah untuk club & bar dengan visual sinematik, tipografi elegan, dan atmosfer yang memadukan reservasi dengan branding nightlife.',
     },
     tags: ['Luxury Brand', 'Hospitality Web', 'Cinematic UI', 'Reservation CTA'],
-    cover: '/projects/velvet-noir/cover.jpg',
+    cover: '/projects/padel-elite/cover.png',
     liveUrl: 'https://velvetnoir-luxury.lovable.app/',
   },
 ]
